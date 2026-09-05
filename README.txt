@@ -28,3 +28,6 @@ PDF files are discovered from /media/<discipline> and rendered using same-origin
 
 
 V17 PDF VIEWER: PDFs are rendered into the page with PDF.js instead of the browser native PDF toolbar. The portfolio UI does not expose Download/Print buttons. Right-click and Ctrl/Cmd+S/Ctrl/Cmd+P are blocked on the PDF viewer. Note: no website can make a publicly delivered PDF impossible to copy for a technically skilled visitor; the original PDF URL remains accessible to the browser.
+
+
+V18 FIX: GitHub media with filenames beginning with an underscore (for example _MG_0005.JPG) is loaded directly from the repository's raw media URL. GitHub Pages/Jekyll may omit underscore-prefixed files from the published site, which caused broken image thumbnails. PDFs continue to use the custom PDF.js viewer.

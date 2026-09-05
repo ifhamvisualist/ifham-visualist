@@ -33,6 +33,7 @@ const GH_REPO='ifham-visualist';
 const MEDIA_EXT=/\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v|pdf)$/i;
 const GH_PAGES_BASE=()=>new URL('./',location.href).href;
 function pagesMediaUrl(kind,name){return new URL(`media/${kind}/${encodeURIComponent(name)}`,GH_PAGES_BASE()).href;}
+function githubRawUrl(kind,name){return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/media/${encodeURIComponent(kind)}/${encodeURIComponent(name)}`;}
 async function loadGitHubMedia(){
   if(location.protocol==='file:') return;
   await Promise.all((data.folders||[]).map(async (f,i)=>{
@@ -49,7 +50,7 @@ async function loadGitHubMedia(){
         const prev=existing.get(String(x.download_url).toLowerCase());
         const video=/\.(mp4|webm|mov|m4v)$/i.test(x.name);
         const pdf=/\.pdf$/i.test(x.name);
-        return prev || {src:pagesMediaUrl(kind,x.name),type:pdf?'pdf':video?'video':'image',title:x.name.replace(/\.[^.]+$/,''),desc:'',id:`gh-${kind}-${i}`};
+        return prev || {src:githubRawUrl(kind,x.name),type:pdf?'pdf':video?'video':'image',title:x.name.replace(/\.[^.]+$/,''),desc:'',id:`gh-${kind}-${i}`};
       });
     }catch(e){ console.warn('GitHub media discovery failed for',mediaFolderKey(f,i),e); }
   }));
