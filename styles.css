@@ -156,3 +156,8 @@ body.viewer-open{overflow:hidden}
 .pdf-preview iframe{width:100%;height:100%;border:0;display:block;background:#fff}
 .viewer-pdf{width:100%;min-height:72vh;background:#111;display:flex;flex-direction:column}
 .viewer-pdf iframe{width:100%;height:68vh;border:0;display:block;background:#fff}
+
+
+/* V16: same-origin embedded PDF viewer */
+.pdf-preview object,.pdf-preview embed{width:100%;height:100%;display:block;border:0;background:#fff}
+.viewer-pdf object,.viewer-pdf embed{width:100%;height:68vh;min-height:560px;display:block;border:0;background:#fff}

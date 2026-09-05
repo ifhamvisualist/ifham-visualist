@@ -21,3 +21,7 @@ PDF SUPPORT: GitHub media folders now automatically load PDF files. PDFs can be 
 
 
 FINAL PDF SUPPORT: PDF files in media folders are embedded for in-page viewing. The portfolio does not add a download/open-PDF button. The browser's own PDF viewer controls may still provide downloading depending on the visitor's browser; this cannot be disabled reliably by a static website.
+
+
+V16 PDF FIX
+PDF files are discovered from /media/<discipline> and rendered using same-origin GitHub Pages URLs, avoiding raw.githubusercontent.com download/embed issues. index.html uses app.js?v=16 to bypass stale browser cache.
