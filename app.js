@@ -4,9 +4,37 @@ const D={site:{name:'IFHAM KHAN',title:'THE VISUALIST',kicker:'A MULTIDISCIPLINA
 D.hero=[['https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80','FRAME 01'],['https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=80','FRAME 02'],['https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=80','FRAME 03'],['https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80','FRAME 04'],['https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80','FRAME 05'],['https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80','FRAME 06'],['https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80','FRAME 07'],['https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80','FRAME 08'],['https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80','FRAME 09'],['https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=80','FRAME 10'],['https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80','FRAME 11'],['https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80','FRAME 12'],['https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80','FRAME 13'],['https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80','FRAME 14']];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function clone(x){return JSON.parse(JSON.stringify(x))}
-let data;try{data=window.PORTFOLIO_DATA?clone(window.PORTFOLIO_DATA):(JSON.parse(localStorage.getItem(KEY))||clone(D))}catch(e){data=clone(D)}
+let data;try{data=JSON.parse(localStorage.getItem(KEY))||clone(D)}catch(e){data=clone(D)}
 if(!data.folders?.length)data.folders=clone(D.folders);
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+
+// GitHub Pages bridge: when the portfolio is hosted publicly, automatically
+// discover media uploaded into /media/<folder> in this repository. This keeps
+// the website in sync with files added through GitHub without requiring the
+// local browser editor's IndexedDB.
+const GH_OWNER='ifhamvisualist';
+const GH_REPO='ifham-visualist';
+const MEDIA_EXT=/\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
+async function loadGitHubMedia(){
+  if(!location.hostname.includes('github.io')) return;
+  await Promise.all((data.folders||[]).map(async f=>{
+    try{
+      const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/media/${encodeURIComponent(f.id)}`);
+      if(!r.ok)return;
+      const list=await r.json();
+      if(!Array.isArray(list))return;
+      const remote=list.filter(x=>x.type==='file' && MEDIA_EXT.test(x.name) && x.download_url);
+      if(!remote.length)return;
+      const existing=new Map((f.items||[]).map(x=>[String(x.src||'').toLowerCase(),x]));
+      f.items=remote.map((x,i)=>{
+        const prev=existing.get(String(x.download_url).toLowerCase());
+        const video=/\.(mp4|webm|mov|m4v)$/i.test(x.name);
+        return prev || {src:x.download_url,type:video?'video':'image',title:x.name.replace(/\.[^.]+$/,''),desc:'',id:`gh-${f.id}-${i}`};
+      });
+    }catch(e){ console.warn('GitHub media discovery failed for',f.id,e); }
+  }));
+}
+
 const dbp=new Promise((resolve,reject)=>{const r=indexedDB.open(MEDIA_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
 async function fileURL(key){if(!key||!String(key).startsWith('idb:'))return key;const db=await dbp;return new Promise((res,rej)=>{const q=db.transaction('files').objectStore('files').get(key.slice(4));q.onsuccess=()=>res(q.result?URL.createObjectURL(q.result):'');q.onerror=()=>rej(q.error)})}
 async function resolveMedia(){for(const f of data.folders||[])for(const x of f.items||[])if(x.src?.startsWith('idb:'))x._src=await fileURL(x.src);for(const p of data.hero||[])if(p[0]?.startsWith('idb:'))p[2]=await fileURL(p[0])}
@@ -46,4 +74,4 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFolder();});
 
-render();
+loadGitHubMedia().finally(render);
