@@ -1,0 +1,7 @@
+IFHAM VISUALIST — EDITOR
+1. Double-click IFHAM-EDITOR.html
+2. It opens the editing dashboard.
+3. Use FRONT 3D, SKILL FOLDERS, ABOUT and CONTACT.
+4. Changes save automatically in this browser.
+5. Click VIEW PORTFOLIO to preview the site.
+Do not open index.html when you want to edit.

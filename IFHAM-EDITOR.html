@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IFHAM KHAN — EDITOR</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080909;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+button,input,textarea{font:inherit}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{border-right:1px solid #222;padding:28px 20px;position:sticky;top:0;height:100vh}
+.brand{font-size:22px;font-weight:800;letter-spacing:.08em;line-height:.9;margin-bottom:45px}
+.brand span{font-size:10px;letter-spacing:.35em;color:#888}
+.nav{display:grid;gap:8px}
+.nav button,.view{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#777;padding:14px 10px;cursor:pointer;text-decoration:none;font-size:11px;letter-spacing:.14em}
+.nav button:hover,.nav button.active,.view:hover{color:#fff;border-color:#252525;background:#111}
+.view{margin-top:35px}
+.status{position:absolute;bottom:22px;left:20px;right:20px;color:#666;font-size:11px;line-height:1.5}
+main{padding:45px 5vw;max-width:1300px;width:100%}
+h1{font-size:clamp(42px,7vw,92px);letter-spacing:-.06em;margin:0 0 8px}
+h2{margin:0 0 10px;font-size:25px}
+h3{margin:0 0 8px;font-size:18px}
+.lead{color:#888;max-width:760px;line-height:1.6;font-size:13px}
+.card,.folder,.media{border:1px solid #202020;background:#101111;padding:20px;margin-top:18px}
+.field{margin:13px 0}
+label.label{display:block;color:#777;font-size:9px;letter-spacing:.16em;margin-bottom:7px}
+input,textarea{width:100%;background:#080909;color:#eee;border:1px solid #292929;padding:12px;border-radius:0;outline:none}
+textarea{min-height:95px;resize:vertical}
+input:focus,textarea:focus{border-color:#666}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{background:#eee;color:#111;border:0;padding:11px 15px;font-size:9px;letter-spacing:.14em;cursor:pointer}
+.btn.dark{background:#1b1c1c;color:#eee;border:1px solid #2b2b2b}
+.btn.danger{background:#321515;color:#f2caca}
+.folder-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.upload{border:1px dashed #343434;padding:24px;text-align:center}
+.note{color:#777;font-size:11px;line-height:1.5}
+.media-list{border-top:1px solid #222;margin-top:18px}
+.media-row{padding:15px 0;border-bottom:1px solid #1d1d1d;display:grid;grid-template-columns:1.1fr 1fr 1.4fr auto;gap:12px;align-items:start}
+.media-row .field{margin:0}
+.mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.mini{border:1px solid #242424;background:#0b0c0c;padding:12px}
+.mini img{width:100%;height:160px;object-fit:cover;display:block;background:#151515}
+.mini input{margin-top:8px}
+.empty{border:1px dashed #292929;padding:30px;color:#777;text-align:center;margin-top:18px}
+.small{font-size:10px;color:#666}
+@media(max-width:850px){
+ .app{grid-template-columns:1fr}
+ aside{position:relative;height:auto;border-right:0;border-bottom:1px solid #222}
+ .status{position:static;margin-top:25px}
+ .grid,.mini-grid,.media-row{grid-template-columns:1fr}
+ .folder-head{display:block}
+ main{padding:30px 18px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand">IFHAM<br><span>EDITOR</span></div>
+  <div class="nav">
+    <button data-tab="front">FRONT 3D</button>
+    <button data-tab="folders">SKILL FOLDERS</button>
+    <button data-tab="about">ABOUT</button>
+    <button data-tab="contact">CONTACT</button>
+    <a class="view" href="index.html" target="_blank">VIEW PORTFOLIO ↗</a>
+  </div>
+  <div class="status">LOCAL EDITOR<br>Changes save automatically in this browser.</div>
+</aside>
+<main><div id="panel"><div class="empty">Loading editor…</div></div></main>
+</div>
+
+<script>
+(function(){
+const KEY='ifhamPortfolio_local_v9';
+const DB='ifhamVisualistMedia';
+const panel=document.getElementById('panel');
+
+const DEFAULT={
+ site:{name:'IFHAM KHAN',title:'THE VISUALIST',kicker:'A MULTIDISCIPLINARY VISUAL PRACTICE',
+ description:'A visual practice built around image, movement and detail.',location:'KUPWARA, KASHMIR',experience:'3+ YEARS'},
+ hero:[
+  ['https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80','FILM'],
+  ['https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=80','PHOTO'],
+  ['https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80','EDIT'],
+  ['https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80','DESIGN']
+ ],
+ folders:[
+  {id:'filmmaking',name:'FILMMAKING',desc:'Cinematic production, camera work and visual storytelling.',items:[]},
+  {id:'editing',name:'EDITING',desc:'Story, rhythm, pacing and post-production.',items:[]},
+  {id:'graphic-design',name:'GRAPHIC DESIGN',desc:'Layouts, campaigns, posters and visual systems.',items:[]},
+  {id:'color-grading',name:'COLOR GRADING',desc:'Tone, contrast, color and cinematic finishing.',items:[]},
+  {id:'photography',name:'PHOTOGRAPHY',desc:'Frames, portraits, landscapes and visual studies.',items:[]},
+  {id:'3d-art',name:'3D ART',desc:'3D modeling, environments and visual experiments.',items:[]},
+  {id:'logo-design',name:'LOGO DESIGN',desc:'Identity marks, logos and brand systems.',items:[]},
+  {id:'motion-visuals',name:'MOTION / VISUALS',desc:'Motion graphics, animation and visual effects.',items:[]}
+ ],
+ about:'I am Ifham Khan — a visual creator working across filmmaking, editing, graphic design, color, photography and 3D. This space is a curated look at the work, experiments and visual language behind the projects.',
+ contacts:{email:'ifhamkhan129@gmail.com',phone:'+91 96826 00148',instagram:'@ifham0_ · @ifhamoffilms · @ifhamgfx',youtube:'@ifhamgfx',linkedin:'linkedin.com/in/ifham-khan-52789430b'}
+};
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+let data;
+try{
+ const saved=localStorage.getItem(KEY);
+ data=saved?JSON.parse(saved):clone(DEFAULT);
+ // Repair older V9/V10 data that had no folders or hero.
+ if(!Array.isArray(data.folders)) data.folders=clone(DEFAULT.folders);
+ if(!Array.isArray(data.hero)) data.hero=clone(DEFAULT.hero);
+ if(!data.site) data.site=clone(DEFAULT.site);
+ if(!data.contacts) data.contacts=clone(DEFAULT.contacts);
+ if(typeof data.about!=='string') data.about=DEFAULT.about;
+}catch(e){data=clone(DEFAULT)}
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function field(label,key,val,area){
+ return '<div class="field"><label class="label">'+label+'</label>'+
+ (area?'<textarea data-key="'+esc(key)+'">'+esc(val)+'</textarea>':
+ '<input data-key="'+esc(key)+'" value="'+esc(val)+'">')+'</div>';
+}
+
+let dbPromise;
+try{
+ dbPromise=new Promise((resolve,reject)=>{
+  const r=indexedDB.open(DB,1);
+  r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('files'))r.result.createObjectStore('files')};
+  r.onsuccess=()=>resolve(r.result); r.onerror=()=>reject(r.error);
+ });
+}catch(e){dbPromise=Promise.reject(e)}
+
+async function putFile(blob){
+ const id=(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random());
+ const db=await dbPromise;
+ await new Promise((res,rej)=>{const q=db.transaction('files','readwrite').objectStore('files').put(blob,id);q.onsuccess=res;q.onerror=()=>rej(q.error)});
+ return 'idb:'+id;
+}
+async function delFile(key){
+ if(!key || !key.startsWith('idb:'))return;
+ const db=await dbPromise;
+ await new Promise((res,rej)=>{const q=db.transaction('files','readwrite').objectStore('files').delete(key.slice(4));q.onsuccess=res;q.onerror=()=>rej(q.error)});
+}
+
+function bindSite(){
+ panel.querySelectorAll('[data-key]').forEach(el=>{
+  el.oninput=()=>{data.site[el.dataset.key]=el.value;save();}
+ });
+}
+
+function front(){
+ panel.innerHTML='<h1>FRONT 3D</h1><p class="lead">Edit the text and homepage gallery below. Changes save automatically.</p>'+
+ '<div class="card">'+
+ field('NAME','name',data.site.name)+field('CREATIVE TITLE','title',data.site.title)+
+ field('KICKER','kicker',data.site.kicker)+field('DESCRIPTION','description',data.site.description,true)+
+ field('LOCATION','location',data.site.location)+field('EXPERIENCE','experience',data.site.experience)+'</div>'+
+ '<div class="card"><h2>Homepage floating frames</h2><p class="lead">Replace a frame image, change its label, or delete it.</p>'+
+ '<div class="mini-grid">'+data.hero.map((p,i)=>
+ '<div class="mini"><img src="'+esc(p[0])+'" onerror="this.style.display=\'none\'">'+
+ '<input data-hero-url="'+i+'" value="'+esc(p[0])+'" placeholder="Image URL">'+
+ '<input data-hero-label="'+i+'" value="'+esc(p[1])+'" placeholder="Frame label">'+
+ '<label class="btn dark" style="display:block;text-align:center;margin-top:8px">REPLACE IMAGE<input hidden type="file" accept="image/*" data-hero-file="'+i+'"></label>'+
+ '<button class="btn danger" style="margin-top:8px" data-hero-del="'+i+'">DELETE FRAME</button></div>').join('')+
+ '</div><div class="actions"><button class="btn" id="addFrame">+ ADD FRAME</button></div></div>';
+ bindSite();
+ panel.querySelectorAll('[data-hero-url]').forEach(e=>e.oninput=()=>{data.hero[+e.dataset.heroUrl][0]=e.value;save()});
+ panel.querySelectorAll('[data-hero-label]').forEach(e=>e.oninput=()=>{data.hero[+e.dataset.heroLabel][1]=e.value;save()});
+ panel.querySelectorAll('[data-hero-file]').forEach(e=>e.onchange=async ev=>{
+  const file=ev.target.files[0]; if(!file)return;
+  const i=+e.dataset.heroFile;
+  if(data.hero[i][0].startsWith('idb:')) await delFile(data.hero[i][0]);
+  data.hero[i][0]=await putFile(file); save(); front();
+ });
+ panel.querySelectorAll('[data-hero-del]').forEach(e=>e.onclick=async()=>{
+  const i=+e.dataset.heroDel; await delFile(data.hero[i][0]); data.hero.splice(i,1); save(); front();
+ });
+ document.getElementById('addFrame').onclick=()=>{data.hero.push([DEFAULT.hero[0][0],'NEW FRAME']);save();front();}
+}
+
+function folderCard(folder,i){
+ return '<section class="folder"><div class="folder-head"><div><h2>'+ (i+1)+'. '+esc(folder.name)+'</h2><div class="small">'+esc(folder.items?.length||0)+' media item(s)</div></div>'+
+ '<div class="actions"><button class="btn" data-up="'+i+'">↑ MOVE UP</button><button class="btn" data-down="'+i+'">↓ MOVE DOWN</button><button class="btn danger" data-folder-del="'+i+'">DELETE FOLDER</button></div></div>'+
+ '<div class="grid"><div>'+field('FOLDER NAME','name',folder.name)+field('DESCRIPTION','desc',folder.desc,true)+'</div>'+
+ '<div class="upload"><h3>ADD PHOTOS + VIDEOS</h3><p class="note">Choose multiple images or videos. They stay on this Mac/browser.</p><label class="btn">CHOOSE FILES<input hidden multiple type="file" accept="image/*,video/*" data-media="'+i+'"></label></div></div>'+
+ '<div class="media-list">'+((folder.items||[]).length?folder.items.map((x,j)=>
+ '<div class="media-row"><div><strong>'+esc(x.title)+'</strong><div class="small">'+esc(x.type)+'</div></div>'+
+ field('TITLE','title',x.title)+field('DESCRIPTION','desc',x.desc,true)+
+ '<button class="btn danger" data-rm="'+i+','+j+'">DELETE</button></div>').join(''):
+ '<div class="empty">No media yet. Use CHOOSE FILES above to add your first photo or video.</div>')+'</div></section>';
+}
+
+function folders(){
+ panel.innerHTML='<h1>SKILL FOLDERS</h1><p class="lead">Each discipline is independent. Add as many photos and videos as your Mac/browser storage allows.</p>'+
+ '<div class="actions"><button class="btn" id="newFolder">+ NEW FOLDER</button><button class="btn dark" id="export">EXPORT BACKUP</button><label class="btn dark">IMPORT BACKUP<input hidden type="file" accept="application/json" id="import"></label></div>'+
+ '<div id="list"></div>';
+ drawFolders();
+ document.getElementById('newFolder').onclick=()=>{data.folders.push({id:'folder-'+Date.now(),name:'NEW FOLDER',desc:'Add description.',items:[]});save();drawFolders();}
+ document.getElementById('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='ifham-visualist-content.json';a.click();}
+ document.getElementById('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const incoming=JSON.parse(await file.text());if(confirm('Replace current text/structure with this backup?')){data=incoming;save();folders()}}catch(err){alert('That backup file is not valid.');}}
+}
+function drawFolders(){
+ const list=document.getElementById('list'); list.innerHTML=data.folders.map(folderCard).join('');
+ list.querySelectorAll('[data-key]').forEach(el=>el.oninput=()=>{
+  const card=el.closest('.folder'), i=[...list.children].indexOf(card);
+  data.folders[i][el.dataset.key]=el.value; save();
+ });
+ list.querySelectorAll('[data-media]').forEach(e=>e.onchange=async ev=>{
+  const i=+e.dataset.media;
+  for(const file of [...ev.target.files]){
+   const key=await putFile(file);
+   data.folders[i].items.push({type:file.type.startsWith('video/')?'video':'image',src:key,title:file.name.replace(/\.[^.]+$/,''),desc:''});
+   save();
+  }
+  drawFolders();
+ });
+ list.querySelectorAll('[data-rm]').forEach(e=>e.onclick=async()=>{
+  const [i,j]=e.dataset.rm.split(',').map(Number);
+  await delFile(data.folders[i].items[j].src); data.folders[i].items.splice(j,1); save(); drawFolders();
+ });
+ list.querySelectorAll('[data-folder-del]').forEach(e=>e.onclick=async()=>{
+  const i=+e.dataset.folderDel;
+  if(!confirm('Delete this folder and all its media?'))return;
+  for(const x of data.folders[i].items||[])await delFile(x.src);
+  data.folders.splice(i,1); save(); drawFolders();
+ });
+ list.querySelectorAll('[data-up]').forEach(e=>e.onclick=()=>{const i=+e.dataset.up;if(i>0){[data.folders[i-1],data.folders[i]]=[data.folders[i],data.folders[i-1]];save();drawFolders();}});
+ list.querySelectorAll('[data-down]').forEach(e=>e.onclick=()=>{const i=+e.dataset.down;if(i<data.folders.length-1){[data.folders[i+1],data.folders[i]]=[data.folders[i],data.folders[i+1]];save();drawFolders();}});
+}
+
+function about(){
+ panel.innerHTML='<h1>ABOUT</h1><p class="lead">Edit your About section.</p><div class="card">'+field('ABOUT TEXT','about',data.about,true)+'</div>';
+ panel.querySelector('[data-key]').oninput=e=>{data.about=e.value;save();}
+}
+function contact(){
+ panel.innerHTML='<h1>CONTACT</h1><p class="lead">Edit your contact and social information.</p><div class="card">'+
+ Object.entries(data.contacts).map(([k,v])=>field(k.toUpperCase(),k,v)).join('')+'</div>';
+ panel.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>{data.contacts[e.dataset.key]=e.value;save();});
+}
+
+function show(tab){
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+ if(tab==='folders')folders(); else if(tab==='about')about(); else if(tab==='contact')contact(); else front();
+}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+save();
+show('front');
+})();
+</script>
+</body>
+</html>
