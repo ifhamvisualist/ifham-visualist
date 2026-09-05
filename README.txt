@@ -25,3 +25,6 @@ FINAL PDF SUPPORT: PDF files in media folders are embedded for in-page viewing. 
 
 V16 PDF FIX
 PDF files are discovered from /media/<discipline> and rendered using same-origin GitHub Pages URLs, avoiding raw.githubusercontent.com download/embed issues. index.html uses app.js?v=16 to bypass stale browser cache.
+
+
+V17 PDF VIEWER: PDFs are rendered into the page with PDF.js instead of the browser native PDF toolbar. The portfolio UI does not expose Download/Print buttons. Right-click and Ctrl/Cmd+S/Ctrl/Cmd+P are blocked on the PDF viewer. Note: no website can make a publicly delivered PDF impossible to copy for a technically skilled visitor; the original PDF URL remains accessible to the browser.

@@ -152,10 +152,14 @@ body.viewer-open{overflow:hidden}
 .theme-object{z-index:4}
 
 /* PDF portfolio support */
-.pdf-preview{width:100%;height:100%;background:#fff;overflow:hidden;position:relative;display:flex;flex-direction:column}
-.pdf-preview iframe{width:100%;height:100%;border:0;display:block;background:#fff}
-.viewer-pdf{width:100%;min-height:72vh;background:#111;display:flex;flex-direction:column}
-.viewer-pdf iframe{width:100%;height:68vh;border:0;display:block;background:#fff}
+.pdf-preview,.viewer-pdf{width:100%;background:#111;overflow:auto;position:relative;display:flex;flex-direction:column;align-items:center;min-height:100%;}
+.pdf-preview{height:100%;}
+.viewer-pdf{min-height:72vh;}
+.pdf-pages{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px;box-sizing:border-box;}
+.pdf-page{width:max-content;max-width:100%;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.35);}
+.pdf-page canvas{display:block;max-width:100%;height:auto;}
+.pdf-loading,.pdf-error{padding:40px 20px;color:#fff;font:500 14px/1.4 "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;}
+.pdf-preview object,.pdf-preview embed,.viewer-pdf object,.viewer-pdf embed{display:none;}
 
 
 /* V16: same-origin embedded PDF viewer */
