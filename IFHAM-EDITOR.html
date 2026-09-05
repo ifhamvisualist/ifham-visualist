@@ -181,7 +181,7 @@ function folderCard(folder,i){
  return '<section class="folder"><div class="folder-head"><div><h2>'+ (i+1)+'. '+esc(folder.name)+'</h2><div class="small">'+esc(folder.items?.length||0)+' media item(s)</div></div>'+
  '<div class="actions"><button class="btn" data-up="'+i+'">↑ MOVE UP</button><button class="btn" data-down="'+i+'">↓ MOVE DOWN</button><button class="btn danger" data-folder-del="'+i+'">DELETE FOLDER</button></div></div>'+
  '<div class="grid"><div>'+field('FOLDER NAME','name',folder.name)+field('DESCRIPTION','desc',folder.desc,true)+'</div>'+
- '<div class="upload"><h3>ADD PHOTOS + VIDEOS</h3><p class="note">Choose multiple images or videos. They stay on this Mac/browser.</p><label class="btn">CHOOSE FILES<input hidden multiple type="file" accept="image/*,video/*" data-media="'+i+'"></label></div></div>'+
+ '<div class="upload"><h3>ADD PHOTOS + VIDEOS</h3><p class="note">Choose multiple images or videos. They stay on this Mac/browser.</p><label class="btn">CHOOSE FILES<input hidden multiple type="file" accept="image/*,video/*,application/pdf" data-media="'+i+'"></label></div></div>'+
  '<div class="media-list">'+((folder.items||[]).length?folder.items.map((x,j)=>
  '<div class="media-row"><div><strong>'+esc(x.title)+'</strong><div class="small">'+esc(x.type)+'</div></div>'+
  field('TITLE','title',x.title)+field('DESCRIPTION','desc',x.desc,true)+
@@ -208,7 +208,7 @@ function drawFolders(){
   const i=+e.dataset.media;
   for(const file of [...ev.target.files]){
    const key=await putFile(file);
-   data.folders[i].items.push({type:file.type.startsWith('video/')?'video':'image',src:key,title:file.name.replace(/\.[^.]+$/,''),desc:''});
+   data.folders[i].items.push({type:file.type==='application/pdf'?'pdf':file.type.startsWith('video/')?'video':'image',src:key,title:file.name.replace(/\.[^.]+$/,''),desc:''});
    save();
   }
   drawFolders();

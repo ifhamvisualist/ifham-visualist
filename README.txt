@@ -16,3 +16,5 @@ Examples:
 GitHub media folders are also resolved using the discipline kind, so media/photography, media/editing, media/color, etc. remain stable even if old local folder IDs were changed.
 
 The site remains standalone: portfolio text/structure uses browser storage and GitHub Pages can serve published media from the repository.
+
+PDF SUPPORT: GitHub media folders now automatically load PDF files. PDFs can be previewed inside the portfolio folder viewer and opened in a new tab. The local editor also accepts PDF uploads.
