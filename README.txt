@@ -18,3 +18,6 @@ GitHub media folders are also resolved using the discipline kind, so media/photo
 The site remains standalone: portfolio text/structure uses browser storage and GitHub Pages can serve published media from the repository.
 
 PDF SUPPORT: GitHub media folders now automatically load PDF files. PDFs can be previewed inside the portfolio folder viewer and opened in a new tab. The local editor also accepts PDF uploads.
+
+
+FINAL PDF SUPPORT: PDF files in media folders are embedded for in-page viewing. The portfolio does not add a download/open-PDF button. The browser's own PDF viewer controls may still provide downloading depending on the visitor's browser; this cannot be disabled reliably by a static website.

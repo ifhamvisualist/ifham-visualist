@@ -153,8 +153,6 @@ body.viewer-open{overflow:hidden}
 
 /* PDF portfolio support */
 .pdf-preview{width:100%;height:100%;background:#fff;overflow:hidden;position:relative;display:flex;flex-direction:column}
-.pdf-preview iframe{width:100%;height:calc(100% - 38px);border:0;display:block;background:#fff}
-.pdf-preview a{height:38px;display:flex;align-items:center;padding:0 12px;background:#111;color:#fff;text-decoration:none;font-size:9px;letter-spacing:.12em}
+.pdf-preview iframe{width:100%;height:100%;border:0;display:block;background:#fff}
 .viewer-pdf{width:100%;min-height:72vh;background:#111;display:flex;flex-direction:column}
 .viewer-pdf iframe{width:100%;height:68vh;border:0;display:block;background:#fff}
-.viewer-pdf a{padding:13px 16px;color:#fff;text-decoration:none;border-top:1px solid #222;font-size:9px;letter-spacing:.12em}
