@@ -1,13 +1,18 @@
-IFHAM VISUALIST — STANDALONE V13 — RESTORED 3D SKILL ENVIRONMENTS
-Open IFHAM-EDITOR.html to edit the portfolio.
-Open index.html to view the portfolio.
-In the WORK section, each skill is now a real clickable folder.
-Click OPEN FOLDER — VIEW ALL WORK to see every photo/video inside that skill.
-The editor stores structure in browser localStorage and uploaded media in IndexedDB.
-This is local to the browser/device; it is not a cloud CMS.
+IFHAM KHAN — THE VISUALIST — V14
 
-V13 keeps the V12 real clickable folder system and restores the original custom 3D environment for every discipline, including the Color Grading environment shown in the earlier design.
+FIX INCLUDED:
+The 3D discipline environment is now matched to the visible discipline name, not the old internal folder ID. This prevents stale/localStorage IDs from causing (for example) LOGO DESIGN to show the FILMMAKING camera.
 
+Examples:
+- FILMMAKING → cinematic camera environment
+- EDITING → editing timeline environment
+- GRAPHIC DESIGN → graphic construction environment
+- COLOR GRADING → color wheel / grading environment
+- PHOTOGRAPHY → camera lens environment
+- 3D ART → wireframe mesh environment
+- LOGO DESIGN → identity grid / logo environment
+- MOTION / VISUALS → motion trails environment
 
-GITHUB PAGES MEDIA
-The hosted portfolio automatically discovers image/video files placed inside media/<folder> in the GitHub repository. For example, media/photography files appear in the PHOTOGRAPHY folder viewer.
+GitHub media folders are also resolved using the discipline kind, so media/photography, media/editing, media/color, etc. remain stable even if old local folder IDs were changed.
+
+The site remains standalone: portfolio text/structure uses browser storage and GitHub Pages can serve published media from the repository.
